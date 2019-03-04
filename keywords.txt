@@ -1,0 +1,69 @@
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ADS	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+isConnected	KEYWORD2
+getFirmwareVersion	KEYWORD2
+available	KEYWORD2
+getX	KEYWORD2
+getY	KEYWORD2
+calibrateZero	KEYWORD2
+calibrateX	KEYWORD2
+calibrateY	KEYWORD2
+saveCalibration	KEYWORD2
+getDeviceType	KEYWORD2
+reset	KEYWORD2
+setSampleRate	KEYWORD2
+setAddress	KEYWORD2
+run	KEYWORD2
+stop	KEYWORD2
+shutdown	KEYWORD2
+wake	KEYWORD2
+setResetPin	KEYWORD2
+hardwareReset	KEYWORD2
+enableInterrupt	KEYWORD2
+disableInterrupt	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+ADS_RUN	LITERAL1
+ADS_SPS	LITERAL1
+ADS_RESET	LITERAL1
+ADS_DFU	LITERAL1
+ADS_SET_ADDRESS	LITERAL1
+ADS_INTERRUPT_ENABLE	LITERAL1
+ADS_GET_FW_VER	LITERAL1
+ADS_CALIBRATE	LITERAL1
+ADS_AXES_ENABLED	LITERAL1
+ADS_SHUTDOWN	LITERAL1
+ADS_GET_DEV_ID	LITERAL1
+ADS_SAMPLE	LITERAL1
+ADS_FW_VER	LITERAL1
+ADS_DEV_ID	LITERAL1
+ADS_CALIBRATE_FIRST	LITERAL1
+ADS_CALIBRATE_FLAT	LITERAL1
+ADS_CALIBRATE_PERP	LITERAL1
+ADS_CALIBRATE_CLEAR	LITERAL1
+ADS_ONE_AXIS	LITERAL1
+ADS_TWO_AXIS	LITERAL1
+ADS_1_HZ	LITERAL1
+ADS_10_HZ	LITERAL1
+ADS_20_HZ	LITERAL1
+ADS_50_HZ	LITERAL1
+ADS_100_HZ	LITERAL1
+ADS_200_HZ	LITERAL1
+ADS_333_HZ	LITERAL1
+ADS_500_HZ	LITERAL1
