@@ -84,9 +84,9 @@ typedef enum
 class ADS
 {
 public:
-  ADS();                                                            //Default constructor
-  bool begin(uint8_t deviceAddress = 0x13, TwoWire i2cPort = Wire); //Check communication and initialize sensor
-  bool isConnected();                                               //Returns true if device acks at the I2C address
+  ADS();                                                              //Default constructor
+  bool begin(uint8_t deviceAddress = 0x13, TwoWire &wirePort = Wire); //Check communication and initialize sensor
+  bool isConnected();                                                 //Returns true if device acks at the I2C address
 
   uint16_t getFirmwareVersion(); //Get the firmware version of this device
 

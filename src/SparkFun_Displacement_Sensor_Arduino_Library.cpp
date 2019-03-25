@@ -31,10 +31,10 @@ ADS::ADS()
 {
 }
 
-bool ADS::begin(uint8_t deviceAddress, TwoWire i2cPort)
+bool ADS::begin(uint8_t deviceAddress, TwoWire &wirePort)
 {
   //Get user's options
-  _i2cPort = i2cPort;
+  _i2cPort = &wirePort;
   _deviceAddress = deviceAddress;
 
   if (isConnected() == false)

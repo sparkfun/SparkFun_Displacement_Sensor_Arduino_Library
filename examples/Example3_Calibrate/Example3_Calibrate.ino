@@ -1,13 +1,34 @@
 /*
-  Library for the Bend Labs Flex Sensors (Angular Displacement Sensor - ADS)
+  Reading the one and two axis flex sensors from Bend Labs
   By: Nathan Seidle @ SparkFun Electronics
   Date: March 2nd, 2019
-  License: This code is public domain but you buy me a beer if you use this and we meet someday (Beerware license).
+  License: This code is public domain but you buy me a beer if you use this
+  and we meet someday (Beerware license).
 
-  Feel like supporting our work? Buy a board from SparkFun!
-  https://www.sparkfun.com/products/14813
+  This example shows how to calibrate a sensor. Open a terminal and press 'c'
+  to calibrate.
 
-  This example reads the flex values of the single or dual axis bend sensor
+  Note, the orientation on the
+  2-axis sensor can be confusing. With the sensor flat on a table, the x axis
+  moves across the surface of the table, the y axis moves up from the table.
+
+  SparkFun labored with love to create this code. Feel like supporting open
+  source? Buy a sensor from SparkFun!
+  https://www.sparkfun.com/products/15245 (2-axis sensor)
+  https://www.sparkfun.com/products/15244 (1-axis sensor)
+
+  Hardware Connections:
+  Use the SparkFun Qwiic Breadboard Jumper (https://www.sparkfun.com/products/14425)
+  to connect to the RedBoard Qwiic and the following pins on the ADS:
+  SCL: Yellow wire on Qwiic cable
+  SDA: Blue
+  VCC: Red
+  GND: Black
+
+  Single axis pinout: https://cdn.sparkfun.com/assets/9/f/8/2/d/Bendlabs_Single_Axis_Flex_Sensor_Pinout.png
+  Dual axis pintout: https://cdn.sparkfun.com/assets/f/f/9/e/6/Bendlabs_Dual_Axis_Flex_Sensor_Pinout.png
+
+  Open the serial monitor at 9600 baud to see the output
 */
 
 #include <Wire.h>
@@ -15,24 +36,15 @@
 
 ADS myFlexSensor; //Create object of the ADS class
 
-byte resetPin = 7;
-const byte dataReadyPin = 2;
-
-long lastTime;
-
-unsigned long samples = 0;
 byte deviceType; //Keeps track of if this sensor is a one axis of two axis sensor
 
 void setup() {
-  pinMode(dataReadyPin, INPUT);
-
-  Serial.begin(115200);
-  Serial.println(F("SparkFun Two Axis Displacement Sensor Example"));
+  Serial.begin(9600);
+  Serial.println(F("SparkFun Displacement Sensor Example"));
 
   Wire.begin();
-  Wire.setClock(400000);
 
-  if (myFlexSensor.begin(0x13) == false) //Address, Wire port, reset pin
+  if (myFlexSensor.begin() == false)
   {
     Serial.println(F("No sensor detected. Check wiring. Freezing..."));
     while (1);
@@ -43,44 +55,17 @@ void setup() {
     Serial.println(F("One axis displacement sensor detected"));
   else if (deviceType == ADS_TWO_AXIS)
     Serial.println(F("Two axis displacement sensor detected"));
-
-  int firmwareVersion = myFlexSensor.getFirmwareVersion();
-  Serial.print(F("Firmware version: "));
-  Serial.println(firmwareVersion);
-
-  //reset(); //Causes sensor to do a soft reset
-  //delay(50); //Wait for sensor to come back online
-
-  //shutdown(); //Power down sensor to 50nA
-  //setResetPin(7); //Useful for low power operation. Call during setup.
-  //wake(); //Wake sensor, requires reset pin
-  //setSampleRate(ADS_100_HZ);
-  //run(); //Begin outputting data in free run mode
-  //setAddress(0x50); //Change I2C address to 0x50
-  myFlexSensor.enableInterrupt();
-  //disableInterrupt();
-
-  myFlexSensor.run(); //Begin sensor outputting readings
 }
 
 void loop() {
 
-  if (digitalRead(dataReadyPin) == LOW)
-    //if (millis() - lastTime > 10)
+  if (myFlexSensor.available() == true)
   {
-    //lastTime = millis();
-    if (myFlexSensor.available() == true)
+    Serial.print(myFlexSensor.getX());
+    if (deviceType == ADS_TWO_AXIS)
     {
-      samples++;
-      Serial.print(samples / (millis() / 1000.0), 2);
-      Serial.print("Hz");
       Serial.print(",");
-      Serial.print(myFlexSensor.getX());
-      if (deviceType == ADS_TWO_AXIS)
-      {
-        Serial.print(",");
-        Serial.println(myFlexSensor.getY());
-      }
+      Serial.println(myFlexSensor.getY());
     }
   }
 
@@ -90,18 +75,6 @@ void loop() {
 
     if (incoming == 'c')
       calibrate();
-    else if (incoming == 's')
-      myFlexSensor.stop();
-    else if (incoming == 'r')
-      myFlexSensor.run();
-    else if (incoming == '1')
-      myFlexSensor.setSampleRate(ADS_1_HZ);
-    else if (incoming == '2')
-      myFlexSensor.setSampleRate(ADS_10_HZ);
-    else if (incoming == '3')
-      myFlexSensor.setSampleRate(ADS_100_HZ);
-    else if (incoming == '4')
-      myFlexSensor.setSampleRate(ADS_500_HZ);
   }
 }
 
