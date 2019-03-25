@@ -1,21 +1,22 @@
-SparkFun SGP30 Library
+SparkFun Angular Displacement Sensor Arduino Library
 ===========================================================
- [![SparkX SGP30 Breakout (Qwiic) (SPX-14813)](https://cdn.sparkfun.com/assets/parts/1/3/0/8/1/14813-SGP30_Breakout__Qwiic_-01.jpg)](https://www.sparkfun.com/products/14813) 
 
-[*SparkX SGP30 Breakout (Qwiic) (SPX-14813)*](https://www.sparkfun.com/products/14813)
+<table class="table table-hover table-striped table-bordered">
+  <tr align="center">
+   <td><a href="https://www.sparkfun.com/products/15244"><img src="https://cdn.sparkfun.com/assets/parts/1/1/9/2/5/14072-SparkFun_16x2_SerLCD_-_Black_on_RGB_3.3V-01.jpg"></a></td>
+   <td><a href="https://www.sparkfun.com/products/15245"><img src="https://cdn.sparkfun.com/assets/parts/1/1/9/2/6/14073-SparkFun_16x2_SerLCD_-_RGB_on_Black_3.3V-01.jpg"></a></td>
+  </tr>
+  <tr align="center">
+    <td><a href="https://www.sparkfun.com/products/15244">SparkFun 1-Axis Digital Flex Sensor (SEN-15244)</a></td>
+    <td><a href="https://www.sparkfun.com/products/15245">SparkFun 2-Axis Digital Flex Sensor (SEN-15245)</a></td>
+  </tr>
+</table>
 
-The SGP30 is an indoor air quality sensor equipped with an I<sup>2</sup>C interface. It outputs equivalent CO<sub>2</sub> in ppm and Total Volatile Organic Compounds (TVOC) in ppb. The sensor also gives access to its raw measurement values of Ethanol and H<sub>2</sub>. 
+The single and dual axis digital flex sensors (also known as Angular Displacement Sensors) from Bend Labs have changed the way we think about flex sensors. This flex sensor has 0.1° precision, with a digital I<sup>2</sup>C interface, and an output rate of up to 500Hz, in a single or dual axis configuration. These are truly powerful sensors.
 
-The SGP30 boasts high stability with low long term drift. With its continuous baseline compensation algorithm, readings stay accurate over time. You can even fine tune your readings by interfacing with an external humidity sensor to add humidity compensation.
-While the CCS811 requires a burn-in of 48 hours and a run-in of 20 minutes the SGP30 is ready to go after just 15 seconds.
+We've written a SparkFun Angular Displacement Sensor Arduino Library to make getting up and running with these sensors a snap. 
 
-SparkFun labored with love to create this code. Feel like supporting open source hardware? 
-Buy a [board](https://www.sparkfun.com/products/14813) from SparkFun!
-
-Shout outs to all those folks that have helped make this library better:
-
-* rharkes - PR to fix RHtoAbsolute missing return
-* njh - Library link fix
+The I<sup>2</sup>C address of the sensor is software configurable which means you can hookup over 100 on a single I2C bus!
 
 Repository Contents
 -------------------
@@ -27,16 +28,19 @@ Repository Contents
 
 Documentation
 --------------
-
 * **[Installing an Arduino Library Guide](https://learn.sparkfun.com/tutorials/installing-an-arduino-library)** - Basic information on how to install an Arduino library.
-* **[Product Repository](https://github.com/sparkfunX/Qwiic-SGP30-Breakout)** - Main repository (including hardware files)
+* **[Product Repository](https://github.com/sparkfun/Qwiic_Twist)** - Main repository (including hardware files)
 
 License Information
 -------------------
 
 This product is _**open source**_! 
 
-Please use, reuse, and modify these files as you see fit. Please maintain attribution to SparkFun Electronics and release anything derivative under the same license.
+Please review the LICENSE.md file for license information. 
+
+If you have any questions or concerns on licensing, please contact techsupport@sparkfun.com.
+
+Please use, reuse, and modify these files as you see fit. Please maintain attribution to SparkFun Electronics and release any derivative under the same license.
 
 Distributed as-is; no warranty is given.
 
