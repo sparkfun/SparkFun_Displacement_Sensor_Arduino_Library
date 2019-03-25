@@ -16,6 +16,8 @@ The single and dual axis digital flex sensors (also known as Angular Displacemen
 
 We've written a SparkFun Angular Displacement Sensor Arduino Library to make getting up and running with these sensors a snap. 
 
+This library is based on the Hardware Abstraction Layer written by Bend Labs. If you have a platform that is not supported by this library consider using their [HAL](https://github.com/bendlabs).
+
 The I<sup>2</sup>C address of the sensor is software configurable which means you can hookup over 100 on a single I2C bus!
 
 Repository Contents
