@@ -127,11 +127,11 @@ private:
   bool readBuffer(uint8_t *buffer, uint8_t len);  //Read a number of bytes (5) from ADS
   bool writeBuffer(uint8_t *buffer, uint8_t len); //Write a number of bytes (5) to ADS
 
-  uint8_t readDeviceType(void);       //Reads the axis of the device attached to
-  void parseSamples(uint8_t *buffer); //Convert bytes floats
-  void processNewData();              //Takes the data from the latest sample and loads it into the filters
-  void signalFilter(float *sample);   // Low pass IIR filter
-  void deadzoneFilter(float *sample); // Deadzone filter
+  uint8_t readDeviceType(void);                //Reads the axis of the device attached to
+  void parseSamples(uint8_t *buffer);          //Convert bytes floats
+  void processNewData();                       //Takes the data from the latest sample and loads it into the filters
+  void signalFilter(volatile float *sample);   // Low pass IIR filter
+  void deadzoneFilter(volatile float *sample); // Deadzone filter
 
   bool beginReadingData(bool run);                               //Places ADS in free run or sleep mode
   bool setDataReadyInterrupt(bool enable);                       //Enables the ADS data ready interrupt line

@@ -446,7 +446,7 @@ bool ADS::writeBuffer(uint8_t *buffer, uint8_t len)
 }
 
 // Low pass IIR filter
-void ADS::signalFilter(float *sample)
+void ADS::signalFilter(volatile float *sample)
 {
   static float filter_samples[2][6];
 
@@ -467,7 +467,7 @@ void ADS::signalFilter(float *sample)
 }
 
 // Deadzone filter
-void ADS::deadzoneFilter(float *sample)
+void ADS::deadzoneFilter(volatile float *sample)
 {
   static float prev_sample[2];
   float dead_zone = 0.5f;
