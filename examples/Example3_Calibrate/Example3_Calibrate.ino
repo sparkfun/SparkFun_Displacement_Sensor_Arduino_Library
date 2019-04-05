@@ -65,8 +65,9 @@ void loop() {
     if (deviceType == ADS_TWO_AXIS)
     {
       Serial.print(",");
-      Serial.println(myFlexSensor.getY());
+      Serial.print(myFlexSensor.getY());
     }
+    Serial.println();
   }
 
   if (Serial.available())
@@ -90,11 +91,14 @@ void calibrate()
 
   myFlexSensor.calibrateZero(); //Call when sensor is straight on both axis
 
-  while (Serial.available() > 0) Serial.read(); //Flush all characters
-  Serial.println(F("Good. Now press a key when the sensor is flat on table but bent at 90 degrees (along X axis)."));
-  while (Serial.available() == 0) delay(10); //Wait for user to press character
-
-  myFlexSensor.calibrateX(); //Call when sensor is straight on Y axis and 90 degrees on X axis
+  if (deviceType == ADS_TWO_AXIS)
+  {
+    while (Serial.available() > 0) Serial.read(); //Flush all characters
+    Serial.println(F("Good. Now press a key when the sensor is flat on table but bent at 90 degrees (along X axis)."));
+    while (Serial.available() == 0) delay(10); //Wait for user to press character
+  
+    myFlexSensor.calibrateX(); //Call when sensor is straight on Y axis and 90 degrees on X axis
+  }
 
   while (Serial.available() > 0) Serial.read(); //Flush all characters
   Serial.println(F("Good. Now press a key when the sensor is straight from base but 90 degrees up from table (along Y axis)."));
