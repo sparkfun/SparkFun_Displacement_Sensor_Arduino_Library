@@ -76,6 +76,8 @@ void loop() {
     if (incoming == 'c')
       calibrate();
   }
+
+  delay(10);
 }
 
 void calibrate()
@@ -101,6 +103,4 @@ void calibrate()
   myFlexSensor.calibrateY(); //Call when sensor is straight on Y axis and 90 degrees on X axis
 
   Serial.println(F("Calibration complete."));
-
-  myFlexSensor.saveCalibration(); //Commit these values to NVM. They will be loaded on next POR.
 }

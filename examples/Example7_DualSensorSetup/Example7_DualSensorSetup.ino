@@ -77,4 +77,5 @@ void loop()
     Serial.print(myFlexSensor2.getY());
     Serial.println();
   }
+  delay(10);
 }
