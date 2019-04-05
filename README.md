@@ -3,8 +3,8 @@ SparkFun Angular Displacement Sensor Arduino Library
 
 <table class="table table-hover table-striped table-bordered">
   <tr align="center">
-   <td><a href="https://www.sparkfun.com/products/15244"><img src="https://cdn.sparkfun.com/assets/parts/1/1/9/2/5/14072-SparkFun_16x2_SerLCD_-_Black_on_RGB_3.3V-01.jpg"></a></td>
-   <td><a href="https://www.sparkfun.com/products/15245"><img src="https://cdn.sparkfun.com/assets/parts/1/1/9/2/6/14073-SparkFun_16x2_SerLCD_-_RGB_on_Black_3.3V-01.jpg"></a></td>
+   <td><a href="https://www.sparkfun.com/products/15244"><img src="https://cdn.sparkfun.com//assets/parts/1/3/7/0/3/15244-Bend_Labs_Soft_Flex_Sensor_-_1-Axis-01.jpg"></a></td>
+   <td><a href="https://www.sparkfun.com/products/15245"><img src="https://cdn.sparkfun.com//assets/parts/1/3/7/0/4/15245-Bend_Labs_Soft_Flex_Sensor_-_2-Axis-01.jpg"></a></td>
   </tr>
   <tr align="center">
     <td><a href="https://www.sparkfun.com/products/15244">SparkFun 1-Axis Digital Flex Sensor (SEN-15244)</a></td>
