@@ -20,6 +20,10 @@ This library is based on the Hardware Abstraction Layer written by Bend Labs. If
 
 The I<sup>2</sup>C address of the sensor is software configurable which means you can hookup over 100 on a single I2C bus!
 
+Thanks to:
+
+* coltonottley - Fixed many bugs and issues around detecting 1-axis sensor properly, proper 1-axis comm, better calibration and polling routines
+
 Repository Contents
 -------------------
 
