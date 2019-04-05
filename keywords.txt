@@ -21,7 +21,7 @@ getY	KEYWORD2
 calibrateZero	KEYWORD2
 calibrateX	KEYWORD2
 calibrateY	KEYWORD2
-saveCalibration	KEYWORD2
+clearCalibration	KEYWORD2
 getDeviceType	KEYWORD2
 reset	KEYWORD2
 setSampleRate	KEYWORD2
