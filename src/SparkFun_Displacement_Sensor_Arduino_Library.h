@@ -36,7 +36,7 @@ typedef enum
   ADS_RESET,
   ADS_DFU,
   ADS_SET_ADDRESS,
-  ADS_INTERRUPT_ENABLE,
+  ADS_POLL,
   ADS_GET_FW_VER,
   ADS_CALIBRATE,
   ADS_AXES_ENABLED,
@@ -60,6 +60,13 @@ typedef enum
   ADS_CALIBRATE_PERP,
   ADS_CALIBRATE_CLEAR
 } ADS_CALIBRATION_STEP_T;
+
+// Default I2C addresses
+typedef enum 
+{
+		ADS_ONE_AXIS_ADDRESS = 0x12,
+		ADS_TWO_AXIS_ADDRESS = 0x13
+} ADS_DEFAULT_ADDRESS;
 
 //There are two types of ADS - single axis and two axis
 typedef enum
@@ -85,7 +92,7 @@ class ADS
 {
 public:
   ADS();                                                              //Default constructor
-  bool begin(uint8_t deviceAddress = 0x13, TwoWire &wirePort = Wire); //Check communication and initialize sensor
+  bool begin(uint8_t deviceAddress = (uint8_t)ADS_ONE_AXIS_ADDRESS, TwoWire &wirePort = Wire); //Check communication and initialize sensor
   bool isConnected();                                                 //Returns true if device acks at the I2C address
 
   uint16_t getFirmwareVersion(); //Get the firmware version of this device
@@ -97,7 +104,7 @@ public:
   bool calibrateZero();   //Call when sensor is straight on both axis
   bool calibrateX();      //Call when sensor is straight on Y axis and 90 degrees on X axis. The X axis is moveable when the sensor is lying on a table.
   bool calibrateY();      //Call when sensor is straight on Y axis and 90 degrees on X axis. Y axis is moved when you pull sensor up from table.
-  bool saveCalibration(); //Commit the current valibration values to non-volatile memory (NVM). They will be loaded on next power up.
+  bool clearCalibration(); ////Delete the current calibration values from non-volatile memory and restore the factory calibration
 
   uint8_t getDeviceType(void);         //Returns the number of axis of the sensor attached to (one or two)
   bool reset();                        //Send command to initiate soft reset
@@ -105,15 +112,13 @@ public:
   bool setAddress(uint8_t newAddress); //Change I2C address of device
 
   bool run();                         //Set sensor to constantly output readings
+  bool poll();						  //Set sensor to sample new data each time sensor is read
   bool stop();                        //Tell device to stop reading
   bool shutdown(void);                //Shutdown ADS. Requires reset to wake up from Shutdown. ~50nA in shutdwon
   bool wake(void);                    //Wakes up ADS from shutdown using hardware reset pin. Takes 100ms.
   void setResetPin(uint8_t pinToUse); //Assign the pin number to use for wake()
 
   void hardwareReset(void); //Reset the Angular Displacement Sensor using the pin defined by setResetPin()
-
-  bool enableInterrupt();  //Enables the data ready interrupt
-  bool disableInterrupt(); //Disables the data ready pin
 
 private:
   TwoWire *_i2cPort;               //This stores the requested i2c port
@@ -122,6 +127,7 @@ private:
 
   uint8_t _adsResetPin = 0; //Optional pin connections to sensor
   bool inFreeRun = false;
+  bool inPolledMode = false;
   uint8_t axisAmount; //Tracks one or two axis sensor type. Set in .begin().
 
   bool readBuffer(uint8_t *buffer, uint8_t len);  //Read a number of bytes (5) from ADS
@@ -134,7 +140,7 @@ private:
   void deadzoneFilter(volatile float *sample); // Deadzone filter
 
   bool beginReadingData(bool run);                               //Places ADS in free run or sleep mode
-  bool setDataReadyInterrupt(bool enable);                       //Enables the ADS data ready interrupt line
+  bool beginPollingData(bool poll);								 //Places ADS in poll mode or sleep mode
   bool calibrate(uint8_t ads_calibration_step, uint8_t degrees); //Set the four calibration points: zero, right on x, right on y, save to NVM
 
   inline int16_t ads_int16_decode(const uint8_t *p_encoded_data); //Convert two bytes of buffer[] to int16

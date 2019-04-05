@@ -24,7 +24,7 @@
 
 #include "SparkFun_Displacement_Sensor_Arduino_Library.h"
 
-#define ADS_TRANSFER_SIZE 5 //All communication with sensor is done in 5 byte frames
+uint8_t ADS_TRANSFER_SIZE = 3; //All communication with one axis sensor is done in 3 byte frames, two axis is done in 5 byte frames
 
 //Constructor
 ADS::ADS()
@@ -38,8 +38,16 @@ bool ADS::begin(uint8_t deviceAddress, TwoWire &wirePort)
   _deviceAddress = deviceAddress;
 
   if (isConnected() == false)
-    return (false);
-
+  {
+	  // See if a two axis sensor is connected
+	  _deviceAddress = ADS_TWO_AXIS_ADDRESS;
+	  ADS_TRANSFER_SIZE = 5;
+	  
+	  // If still no device found return false
+	  if(isConnected() == false)
+		  return false;
+  }
+  
   reset();   //Issue command to do a software reset
   delay(50); //Wait for device to come back online.
 
@@ -47,7 +55,9 @@ bool ADS::begin(uint8_t deviceAddress, TwoWire &wirePort)
 
   setSampleRate(ADS_100_HZ);
 
-  run(); //Set sensor to output data continuously
+  //run(); //Set sensor to output data continuously
+  
+  poll();	//Set sensor to sample when read via I2C 
 
   return (true); //All done!
 }
@@ -161,11 +171,26 @@ bool ADS::run()
   return (beginReadingData(true));
 }
 
+//Set the sensor to polled mode readings
+bool ADS::poll()
+{
+	inPolledMode = true;
+	return(beginPollingData(true));
+}
+
 //Tell device to stop reading
 bool ADS::stop()
 {
-  inFreeRun = false;
-  return (beginReadingData(false));
+	if(inFreeRun)
+	{
+		inFreeRun = false;
+		return(beginReadingData(false));
+	}
+	else if(inPolledMode)
+	{
+		inPolledMode = false;
+		return(beginPollingData(false));
+	}
 }
 
 /*
@@ -182,6 +207,22 @@ bool ADS::beginReadingData(bool run)
   buffer[1] = run;
 
   return writeBuffer(buffer, ADS_TRANSFER_SIZE);
+}
+
+/*
+   @brief Places ADS in polled or sleep mode
+
+   @param  run true if activating ADS, false is putting in suspend mode
+   @return  ADS_OK if successful ADS_ERR_IO if failed
+*/
+bool ADS::beginPollingData(bool poll)
+{
+	uint8_t buffer[ADS_TRANSFER_SIZE];
+	
+	buffer[0] = ADS_POLL;
+	buffer[1] = poll;
+	
+	return writeBuffer(buffer, ADS_TRANSFER_SIZE);
 }
 
 //Checks to see if new data is available
@@ -229,12 +270,23 @@ float ADS::getY()
 */
 void ADS::parseSamples(uint8_t *buffer)
 {
+	int16_t temp;
+	
+	if(axisAmount == ADS_ONE_AXIS)
+	{
+		temp = ads_int16_decode(&buffer[1]);
+		currentSample[0] = (float)temp / 64.0f;
+		
+		currentSample[1] = 0.0f;
+	}
+	else
+	{	
+		temp = ads_int16_decode(&buffer[1]);
+		currentSample[0] = (float)temp / 32.0f;
 
-  int16_t temp = ads_int16_decode(&buffer[1]);
-  currentSample[0] = (float)temp / 32.0f;
-
-  temp = ads_int16_decode(&buffer[3]);
-  currentSample[1] = (float)temp / 32.0f;
+		temp = ads_int16_decode(&buffer[3]);
+		currentSample[1] = (float)temp / 32.0f;
+	}
 }
 
 /**@brief Function for decoding a int16 value.
@@ -302,34 +354,6 @@ void ADS::hardwareReset(void)
   pinMode(_adsResetPin, INPUT_PULLUP);
 }
 
-//Enables the data ready interrupt
-bool ADS::enableInterrupt()
-{
-  return (setDataReadyInterrupt(true));
-}
-
-//Disables the data ready pin
-bool ADS::disableInterrupt()
-{
-  return (setDataReadyInterrupt(false));
-}
-
-/**
-   @brief Enables the ADS data ready interrupt line
-
-   @param  run true if activating ADS, false is putting in suspend mode
-   @return  True if successful false if failed
-*/
-bool ADS::setDataReadyInterrupt(bool enable)
-{
-  uint8_t buffer[ADS_TRANSFER_SIZE];
-
-  buffer[0] = ADS_INTERRUPT_ENABLE;
-  buffer[1] = enable;
-
-  return writeBuffer(buffer, ADS_TRANSFER_SIZE);
-}
-
 //Call when sensor is straight on both axis
 bool ADS::calibrateZero()
 {
@@ -350,8 +374,8 @@ bool ADS::calibrateY()
   calibrate(ADS_CALIBRATE_PERP, 90);
 }
 
-//Commit the current valibration values to non-volatile memory (NVM). They will be loaded on next power up.
-bool ADS::saveCalibration()
+//Delete the current calibration values from non-volatile memory and restore the factory calibration
+bool ADS::clearCalibration()
 {
   calibrate(ADS_CALIBRATE_CLEAR, 0);
 }
