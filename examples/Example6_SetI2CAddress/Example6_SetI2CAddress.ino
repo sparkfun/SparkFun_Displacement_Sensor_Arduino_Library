@@ -53,7 +53,7 @@ void setup()
     while (1);
   }
 
-  //Begin communication with sensorr at current address
+  //Begin communication with sensor at current address
   if (myFlexSensor.begin(currentAddress) == true)
   {
     Serial.print("Flex Sensor found at address 0x");

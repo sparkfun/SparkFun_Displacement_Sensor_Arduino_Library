@@ -39,25 +39,34 @@ bool ADS::begin(uint8_t deviceAddress, TwoWire &wirePort)
 
   if (isConnected() == false)
   {
-	  // See if a two axis sensor is connected
-	  _deviceAddress = ADS_TWO_AXIS_ADDRESS;
-	  ADS_TRANSFER_SIZE = 5;
-	  
-	  // If still no device found return false
-	  if(isConnected() == false)
-		  return false;
+    // See if a two axis sensor is connected
+    _deviceAddress = ADS_TWO_AXIS_ADDRESS;
+    ADS_TRANSFER_SIZE = 5;
+
+    // If still no device found return false
+    if (isConnected() == false)
+      return false;
   }
-  
+
   reset();   //Issue command to do a software reset
   delay(50); //Wait for device to come back online.
 
+  //Based on device address, guess at axis type, but then confirm it
+  //There's a case where the user is using a 1-axis device at ADS_TWO_AXIS_ADDRESS and vice versa
+
   axisAmount = readDeviceType(); //Set global sensor axis number
+
+  if (axisAmount == ADS_ONE_AXIS)
+    ADS_TRANSFER_SIZE = 3;
+
+  if (axisAmount == ADS_TWO_AXIS)
+    ADS_TRANSFER_SIZE = 5;
 
   setSampleRate(ADS_100_HZ);
 
   //run(); //Set sensor to output data continuously
-  
-  poll();	//Set sensor to sample when read via I2C 
+
+  poll(); //Set sensor to sample when read via I2C
 
   return (true); //All done!
 }
@@ -174,23 +183,23 @@ bool ADS::run()
 //Set the sensor to polled mode readings
 bool ADS::poll()
 {
-	inPolledMode = true;
-	return(beginPollingData(true));
+  inPolledMode = true;
+  return (beginPollingData(true));
 }
 
 //Tell device to stop reading
 bool ADS::stop()
 {
-	if(inFreeRun)
-	{
-		inFreeRun = false;
-		return(beginReadingData(false));
-	}
-	else if(inPolledMode)
-	{
-		inPolledMode = false;
-		return(beginPollingData(false));
-	}
+  if (inFreeRun)
+  {
+    inFreeRun = false;
+    return (beginReadingData(false));
+  }
+  else if (inPolledMode)
+  {
+    inPolledMode = false;
+    return (beginPollingData(false));
+  }
 }
 
 /*
@@ -217,12 +226,12 @@ bool ADS::beginReadingData(bool run)
 */
 bool ADS::beginPollingData(bool poll)
 {
-	uint8_t buffer[ADS_TRANSFER_SIZE];
-	
-	buffer[0] = ADS_POLL;
-	buffer[1] = poll;
-	
-	return writeBuffer(buffer, ADS_TRANSFER_SIZE);
+  uint8_t buffer[ADS_TRANSFER_SIZE];
+
+  buffer[0] = ADS_POLL;
+  buffer[1] = poll;
+
+  return writeBuffer(buffer, ADS_TRANSFER_SIZE);
 }
 
 //Checks to see if new data is available
@@ -270,23 +279,23 @@ float ADS::getY()
 */
 void ADS::parseSamples(uint8_t *buffer)
 {
-	int16_t temp;
-	
-	if(axisAmount == ADS_ONE_AXIS)
-	{
-		temp = ads_int16_decode(&buffer[1]);
-		currentSample[0] = (float)temp / 64.0f;
-		
-		currentSample[1] = 0.0f;
-	}
-	else
-	{	
-		temp = ads_int16_decode(&buffer[1]);
-		currentSample[0] = (float)temp / 32.0f;
+  int16_t temp;
 
-		temp = ads_int16_decode(&buffer[3]);
-		currentSample[1] = (float)temp / 32.0f;
-	}
+  if (axisAmount == ADS_ONE_AXIS)
+  {
+    temp = ads_int16_decode(&buffer[1]);
+    currentSample[0] = (float)temp / 64.0f;
+
+    currentSample[1] = 0.0f;
+  }
+  else
+  {
+    temp = ads_int16_decode(&buffer[1]);
+    currentSample[0] = (float)temp / 32.0f;
+
+    temp = ads_int16_decode(&buffer[3]);
+    currentSample[1] = (float)temp / 32.0f;
+  }
 }
 
 /**@brief Function for decoding a int16 value.

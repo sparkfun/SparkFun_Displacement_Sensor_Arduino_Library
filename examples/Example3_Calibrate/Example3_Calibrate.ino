@@ -87,24 +87,36 @@ void calibrate()
 
   while (Serial.available() > 0) Serial.read(); //Flush all characters
   Serial.println(F("Press a key when the sensor is flat and straight on a table"));
-  while (Serial.available() == 0) delay(10); //Wait for user to press character
+  while (Serial.available() == 0) 
+  {
+    myFlexSensor.available();
+    delay(10); //Wait for user to press character
+  }
 
   myFlexSensor.calibrateZero(); //Call when sensor is straight on both axis
 
   if (deviceType == ADS_TWO_AXIS)
   {
     while (Serial.available() > 0) Serial.read(); //Flush all characters
-    Serial.println(F("Good. Now press a key when the sensor is flat on table but bent at 90 degrees (along X axis)."));
-    while (Serial.available() == 0) delay(10); //Wait for user to press character
+    Serial.println(F("Good. Now press a key when the sensor is straight from base but 90 degrees up from table (along Y axis)."));
+    while (Serial.available() == 0)
+    {
+      myFlexSensor.available();
+      delay(10); //Wait for user to press character
+    }
   
-    myFlexSensor.calibrateX(); //Call when sensor is straight on Y axis and 90 degrees on X axis
+    myFlexSensor.calibrateY(); //Call when sensor is straight on Y axis and 90 degrees on X axis
   }
 
   while (Serial.available() > 0) Serial.read(); //Flush all characters
-  Serial.println(F("Good. Now press a key when the sensor is straight from base but 90 degrees up from table (along Y axis)."));
-  while (Serial.available() == 0) delay(10); //Wait for user to press character
-
-  myFlexSensor.calibrateY(); //Call when sensor is straight on Y axis and 90 degrees on X axis
-
+  Serial.println(F("Good. Now press a key when the sensor is flat on table but bent at 90 degrees (along X axis)."));
+  while (Serial.available() == 0)
+  {
+    myFlexSensor.available();
+    delay(10); //Wait for user to press character
+  }
+  
+  myFlexSensor.calibrateX(); //Call when sensor is straight on Y axis and 90 degrees on X axis
+  
   Serial.println(F("Calibration complete."));
 }

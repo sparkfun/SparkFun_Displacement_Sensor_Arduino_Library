@@ -43,7 +43,6 @@ void setup() {
     Serial.println(F("No sensor detected. Check wiring. Freezing..."));
     while (1);
   }
-
 }
 
 void loop() {
