@@ -54,7 +54,7 @@ bool ADS::begin(uint8_t deviceAddress, TwoWire &wirePort)
   //Based on device address, guess at axis type, but then confirm it
   //There's a case where the user is using a 1-axis device at ADS_TWO_AXIS_ADDRESS and vice versa
 
-  axisAmount = readDeviceType(); //Set global sensor axis number
+  axisAmount = (ADS_DEV_IDS_T) readDeviceType(); //Set global sensor axis number
 
   if (axisAmount == ADS_ONE_AXIS)
     ADS_TRANSFER_SIZE = 3;
