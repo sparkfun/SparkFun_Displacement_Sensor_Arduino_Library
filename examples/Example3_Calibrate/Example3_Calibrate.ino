@@ -40,6 +40,7 @@ byte deviceType; //Keeps track of if this sensor is a one axis of two axis senso
 
 void setup() {
   Serial.begin(9600);
+  while(!Serial);
   Serial.println(F("SparkFun Displacement Sensor Example"));
 
   Wire.begin();

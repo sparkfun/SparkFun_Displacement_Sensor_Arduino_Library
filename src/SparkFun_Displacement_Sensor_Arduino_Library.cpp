@@ -64,9 +64,9 @@ bool ADS::begin(uint8_t deviceAddress, TwoWire &wirePort)
 
   setSampleRate(ADS_100_HZ);
 
-  //run(); //Set sensor to output data continuously
+  run(); //Set sensor to output data continuously
 
-  poll(); //Set sensor to sample when read via I2C
+  //poll(); //Set sensor to sample when read via I2C
 
   return (true); //All done!
 }

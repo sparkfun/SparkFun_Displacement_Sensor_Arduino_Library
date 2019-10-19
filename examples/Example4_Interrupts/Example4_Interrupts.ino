@@ -32,7 +32,8 @@
 
 ADS myFlexSensor; //Create object of the ADS class
 
-const byte dataReadyPin = 2; //This can be any pin
+const byte dataReadyPin = 4;  //This can be any pin, but avoid pin 2. See: https://learn.sparkfun.com/tutorials/sparkfun-pro-nrf52840-mini-hookup-guide 
+// "Because pin 2's state at reset is sampled by the bootloader, be careful using it with any component that may pull the pin low on startup."
 
 long lastTime;
 
@@ -43,6 +44,7 @@ void setup() {
   pinMode(dataReadyPin, INPUT);
 
   Serial.begin(9600);
+  while(!Serial);
   Serial.println(F("SparkFun Displacement Sensor Example"));
 
   Wire.begin();
@@ -59,9 +61,6 @@ void setup() {
     Serial.println(F("One axis displacement sensor detected"));
   else if (deviceType == ADS_TWO_AXIS)
     Serial.println(F("Two axis displacement sensor detected"));
-
-  myFlexSensor.enableInterrupt(); //Tell sensor to pull DRDY pin low when new data is available
-  //myFlexSensor.disableInterrupt(); //We can also disable this if needed
 
   myFlexSensor.run(); //Begin sensor outputting readings
 }

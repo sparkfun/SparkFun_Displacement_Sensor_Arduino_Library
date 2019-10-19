@@ -36,6 +36,7 @@ ADS myFlexSensor; //Create object of the ADS class
 void setup()
 {
   Serial.begin(9600);
+  while(!Serial);
   Serial.println(F("SparkFun Displacement Sensor Example"));
 
   Wire1.begin(); //Compilation will fail here if your platform (ie, the Arduino Uno)
