@@ -54,7 +54,7 @@ bool ADS::begin(uint8_t deviceAddress, TwoWire &wirePort)
   //Based on device address, guess at axis type, but then confirm it
   //There's a case where the user is using a 1-axis device at ADS_TWO_AXIS_ADDRESS and vice versa
 
-  axisAmount = (ADS_DEV_IDS_T) readDeviceType(); //Set global sensor axis number
+  axisAmount = (ADS_DEV_IDS_T)readDeviceType(); //Set global sensor axis number
 
   if (axisAmount == ADS_ONE_AXIS)
     ADS_TRANSFER_SIZE = 3;
@@ -200,6 +200,7 @@ bool ADS::stop()
     inPolledMode = false;
     return (beginPollingData(false));
   }
+  return (false);
 }
 
 /*
@@ -366,27 +367,27 @@ void ADS::hardwareReset(void)
 //Call when sensor is straight on both axis
 bool ADS::calibrateZero()
 {
-  calibrate(ADS_CALIBRATE_FIRST, 0);
+  return (calibrate(ADS_CALIBRATE_FIRST, 0));
 }
 
 //Call when sensor is straight on Y axis and 90 degrees on X axis
 //The X axis is moveable when the sensor is lying on a table. Y axis is moved when you pull sensor up from table.
 bool ADS::calibrateX()
 {
-  calibrate(ADS_CALIBRATE_FLAT, 90);
+  return (calibrate(ADS_CALIBRATE_FLAT, 90));
 }
 
 //Call when sensor is straight on Y axis and 90 degrees on X axis
 //Y axis is moved when you pull sensor up from table. The X axis is moveable when the sensor is lying on a table.
 bool ADS::calibrateY()
 {
-  calibrate(ADS_CALIBRATE_PERP, 90);
+  return (calibrate(ADS_CALIBRATE_PERP, 90));
 }
 
 //Delete the current calibration values from non-volatile memory and restore the factory calibration
 bool ADS::clearCalibration()
 {
-  calibrate(ADS_CALIBRATE_CLEAR, 0);
+  return (calibrate(ADS_CALIBRATE_CLEAR, 0));
 }
 
 /**
