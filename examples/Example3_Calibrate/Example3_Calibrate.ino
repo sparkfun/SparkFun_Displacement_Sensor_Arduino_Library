@@ -28,7 +28,7 @@
   Single axis pinout: https://cdn.sparkfun.com/assets/9/f/8/2/d/Bendlabs_Single_Axis_Flex_Sensor_Pinout.png
   Dual axis pintout: https://cdn.sparkfun.com/assets/f/f/9/e/6/Bendlabs_Dual_Axis_Flex_Sensor_Pinout.png
 
-  Open the serial monitor at 9600 baud to see the output
+  Open the serial monitor at 115200 baud to see the output
 */
 
 #include <Wire.h>
@@ -38,9 +38,11 @@ ADS myFlexSensor; //Create object of the ADS class
 
 byte deviceType; //Keeps track of if this sensor is a one axis of two axis sensor
 
-void setup() {
-  Serial.begin(9600);
-  while(!Serial);
+void setup()
+{
+  Serial.begin(115200);
+  while (!Serial)
+    ;
   Serial.println(F("SparkFun Displacement Sensor Example"));
 
   Wire.begin();
@@ -48,7 +50,8 @@ void setup() {
   if (myFlexSensor.begin() == false)
   {
     Serial.println(F("No sensor detected. Check wiring. Freezing..."));
-    while (1);
+    while (1)
+      ;
   }
 
   deviceType = myFlexSensor.getDeviceType();
@@ -58,7 +61,8 @@ void setup() {
     Serial.println(F("Two axis displacement sensor detected"));
 }
 
-void loop() {
+void loop()
+{
 
   if (myFlexSensor.available() == true)
   {
@@ -86,9 +90,10 @@ void calibrate()
 {
   Serial.println(F("Calibration routine"));
 
-  while (Serial.available() > 0) Serial.read(); //Flush all characters
+  while (Serial.available() > 0)
+    Serial.read(); //Flush all characters
   Serial.println(F("Press a key when the sensor is flat and straight on a table"));
-  while (Serial.available() == 0) 
+  while (Serial.available() == 0)
   {
     myFlexSensor.available();
     delay(10); //Wait for user to press character
@@ -98,26 +103,28 @@ void calibrate()
 
   if (deviceType == ADS_TWO_AXIS)
   {
-    while (Serial.available() > 0) Serial.read(); //Flush all characters
+    while (Serial.available() > 0)
+      Serial.read(); //Flush all characters
     Serial.println(F("Good. Now press a key when the sensor is straight from base but 90 degrees up from table (along Y axis)."));
     while (Serial.available() == 0)
     {
       myFlexSensor.available();
       delay(10); //Wait for user to press character
     }
-  
+
     myFlexSensor.calibrateY(); //Call when sensor is straight on Y axis and 90 degrees on X axis
   }
 
-  while (Serial.available() > 0) Serial.read(); //Flush all characters
+  while (Serial.available() > 0)
+    Serial.read(); //Flush all characters
   Serial.println(F("Good. Now press a key when the sensor is flat on table but bent at 90 degrees (along X axis)."));
   while (Serial.available() == 0)
   {
     myFlexSensor.available();
     delay(10); //Wait for user to press character
   }
-  
+
   myFlexSensor.calibrateX(); //Call when sensor is straight on Y axis and 90 degrees on X axis
-  
+
   Serial.println(F("Calibration complete."));
 }

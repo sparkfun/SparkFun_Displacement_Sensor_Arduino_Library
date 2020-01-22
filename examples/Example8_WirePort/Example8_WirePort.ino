@@ -25,7 +25,7 @@
   Single axis pinout: https://cdn.sparkfun.com/assets/9/f/8/2/d/Bendlabs_Single_Axis_Flex_Sensor_Pinout.png
   Dual axis pintout: https://cdn.sparkfun.com/assets/f/f/9/e/6/Bendlabs_Dual_Axis_Flex_Sensor_Pinout.png
 
-  Open the serial monitor at 9600 baud to see the output
+  Open the serial monitor at 115200 baud to see the output
 */
 
 #include <Wire.h>
@@ -35,8 +35,9 @@ ADS myFlexSensor; //Create object of the ADS class
 
 void setup()
 {
-  Serial.begin(9600);
-  while(!Serial);
+  Serial.begin(115200);
+  while (!Serial)
+    ;
   Serial.println(F("SparkFun Displacement Sensor Example"));
 
   Wire1.begin(); //Compilation will fail here if your platform (ie, the Arduino Uno)
@@ -48,7 +49,8 @@ void setup()
   if (myFlexSensor.begin(19, Wire1) == false)
   {
     Serial.println(F("Sensor not detected. Check wiring. Freezing..."));
-    while (1);
+    while (1)
+      ;
   }
 }
 

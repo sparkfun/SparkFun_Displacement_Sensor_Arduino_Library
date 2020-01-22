@@ -25,26 +25,28 @@
   Single axis pinout: https://cdn.sparkfun.com/assets/9/f/8/2/d/Bendlabs_Single_Axis_Flex_Sensor_Pinout.png
   Dual axis pintout: https://cdn.sparkfun.com/assets/f/f/9/e/6/Bendlabs_Dual_Axis_Flex_Sensor_Pinout.png
 
-  Open the serial monitor at 9600 baud to see the output*/
+  Open the serial monitor at 115200 baud to see the output*/
 
 #include <Wire.h>
 #include "SparkFun_Displacement_Sensor_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_Displacement_Sensor
 
 ADS myFlexSensor; //Create object of the ADS class
 
-const byte dataReadyPin = 4;  //This can be any pin, but avoid pin 2. See: https://learn.sparkfun.com/tutorials/sparkfun-pro-nrf52840-mini-hookup-guide 
+const byte dataReadyPin = 4; //This can be any pin, but avoid pin 2. See: https://learn.sparkfun.com/tutorials/sparkfun-pro-nrf52840-mini-hookup-guide
 // "Because pin 2's state at reset is sampled by the bootloader, be careful using it with any component that may pull the pin low on startup."
 
 long lastTime;
 
 unsigned long samples = 0; //Allows us to calculate the actual read rate in Hz
-byte deviceType; //Keeps track of if this sensor is a one axis of two axis sensor
+byte deviceType;           //Keeps track of if this sensor is a one axis of two axis sensor
 
-void setup() {
+void setup()
+{
   pinMode(dataReadyPin, INPUT);
 
-  Serial.begin(9600);
-  while(!Serial);
+  Serial.begin(115200);
+  while (!Serial)
+    ;
   Serial.println(F("SparkFun Displacement Sensor Example"));
 
   Wire.begin();
@@ -53,7 +55,8 @@ void setup() {
   if (myFlexSensor.begin() == false)
   {
     Serial.println(F("No sensor detected. Check wiring. Freezing..."));
-    while (1);
+    while (1)
+      ;
   }
 
   deviceType = myFlexSensor.getDeviceType();
@@ -68,7 +71,8 @@ void setup() {
   myFlexSensor.run(); //Begin sensor outputting readings
 }
 
-void loop() {
+void loop()
+{
 
   if (digitalRead(dataReadyPin) == LOW)
   {
