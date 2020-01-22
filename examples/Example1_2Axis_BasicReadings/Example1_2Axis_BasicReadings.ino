@@ -34,6 +34,7 @@ ADS myFlexSensor; //Create instance of the ADS class
 
 void setup() {
   Serial.begin(9600);
+  while(!Serial);
   Serial.println("SparkFun Displacement Sensor Example");
 
   Wire.begin();
