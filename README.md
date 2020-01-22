@@ -23,6 +23,7 @@ The I<sup>2</sup>C address of the sensor is software configurable which means yo
 Thanks to:
 
 * coltonottley - Fixed many bugs and issues around detecting 1-axis sensor properly, proper 1-axis comm, better calibration and polling routines
+* [aleixpb2](https://github.com/aleixpb2) - Fixed the bad/broken uncompilable code (oh dear!).
 
 Repository Contents
 -------------------
