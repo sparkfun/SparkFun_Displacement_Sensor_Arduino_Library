@@ -62,8 +62,10 @@ void loop() {
     if (deviceType == ADS_TWO_AXIS)
     {
       Serial.print(",");
-      Serial.println(myFlexSensor.getY());
+      Serial.print(myFlexSensor.getY());
     }
+
+    Serial.println();
   }
   delay(10);
 }
