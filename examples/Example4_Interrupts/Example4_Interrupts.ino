@@ -62,6 +62,9 @@ void setup() {
   else if (deviceType == ADS_TWO_AXIS)
     Serial.println(F("Two axis displacement sensor detected"));
 
+  myFlexSensor.enableInterrupt(); //Tell sensor to pull DRDY pin low when new data is available
+  //myFlexSensor.disableInterrupt(); //We can also disable this if needed
+
   myFlexSensor.run(); //Begin sensor outputting readings
 }
 
