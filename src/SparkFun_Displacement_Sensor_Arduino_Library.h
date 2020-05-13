@@ -124,6 +124,9 @@ private:
   TwoWire *_i2cPort;               //This stores the requested i2c port
   uint8_t _deviceAddress = 0x13;   //Unshifted 7-bit default address of the ADS is 0x13
   volatile float currentSample[2]; //This is where the calculated angular values are stored pre and post filtering
+  
+  float filter_samples[2][6];		// Filter samples
+  float prev_sample[2];				// Deadzone filter samples
 
   uint8_t _adsResetPin = 0; //Optional pin connections to sensor
   bool inFreeRun = false;
