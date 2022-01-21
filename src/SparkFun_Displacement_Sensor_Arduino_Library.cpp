@@ -219,6 +219,23 @@ bool ADS::beginReadingData(bool run)
   return writeBuffer(buffer, ADS_TRANSFER_SIZE);
 }
 
+/**
+ * @brief Enable and Disable the reading of linear displacment data
+ *
+ * @param enable true if enabling ADS to read stretch, false is disabling
+ * @return ADS_OK if successful
+ * @return ADS_ERR_IO if failed
+ */
+bool ADS::enableStretching(bool enable)
+{
+  uint8_t buffer[ADS_TRANSFER_SIZE];
+
+  buffer[0] = ADS_AXES_ENABLED;
+  buffer[1] = enable;
+
+  return writeBuffer(buffer, ADS_TRANSFER_SIZE);
+}
+
 /*
    @brief Places ADS in polled or sleep mode
 
@@ -242,20 +259,14 @@ bool ADS::beginPollingData(bool poll)
 bool ADS::available()
 {
   uint8_t buffer[ADS_TRANSFER_SIZE];
-
+  bool ret_value = false;
   if (readBuffer(buffer, ADS_TRANSFER_SIZE) == true)
   {
-    if (buffer[0] == ADS_SAMPLE) //Verify this is a data sample report
-    {
-      parseSamples(buffer); //Pull bytes from buffer and turn them into floats
-
-      processNewData(); //Run new samples through the deadband and signal filters
-      //This assigns good, filtered readings to currentSamples 0 and 1
-
-      return (true);
-    }
+    ret_value = parseSamples(buffer);
+    processNewData(); //Run new samples through the deadband and signal filters
+        //This assigns good, filtered readings to currentSamples 0 and 1
   }
-  return (false);
+  return ret_value;
 }
 
 //Return a reading from the sensor
@@ -271,6 +282,18 @@ float ADS::getX()
 //The currentSample is calculated when available() is called and receives new data
 float ADS::getY()
 {
+  if (axisAmount == ADS_ONE_AXIS)
+    return 0.0;
+  return (currentSample[1]);
+}
+
+//Return streching data from the sensor
+//Check .available() before calling this
+//The currentSample is calculated when available() is called and receives new data
+float ADS::getStretchingData()
+{
+  if (axisAmount == ADS_TWO_AXIS)
+    return 0.0;
   return (currentSample[1]);
 }
 
@@ -278,25 +301,45 @@ float ADS::getY()
    @brief Parses sample buffer from two axis ADS. Scales to degrees and
           executes callback registered in ads_two_axis_init.
 */
-void ADS::parseSamples(uint8_t *buffer)
+bool ADS::parseSamples(uint8_t *buffer)
 {
   int16_t temp;
 
-  if (axisAmount == ADS_ONE_AXIS)
+  if (axisAmount == ADS_ONE_AXIS) // Receiving data from one-axis sensor
   {
-    temp = ads_int16_decode(&buffer[1]);
-    currentSample[0] = (float)temp / 64.0f;
-
-    currentSample[1] = 0.0f;
+    if (buffer[0] == ADS_SAMPLE) //Verify this is a data sample report
+    {
+      temp = ads_int16_decode(&buffer[1]);
+      currentSample[0] = (float)temp / 64.0f;
+    }
+    else if(buffer[0] == ADS_STRETCH_SAMPLE)
+    {
+      temp = ads_int16_decode(&buffer[1]);
+      currentSample[1] = (float)temp / 64.0f;
+    }
+    else
+    {
+      return (false);
+    }
   }
-  else
+
+  else // Receiving data from two-axis sensor
   {
-    temp = ads_int16_decode(&buffer[1]);
-    currentSample[0] = (float)temp / 32.0f;
+    if (buffer[0] == ADS_SAMPLE) //Verify this is a data sample report
+    {
+      temp = ads_int16_decode(&buffer[1]);
+      currentSample[0] = (float)temp / 32.0f;
 
-    temp = ads_int16_decode(&buffer[3]);
-    currentSample[1] = (float)temp / 32.0f;
+      temp = ads_int16_decode(&buffer[3]);
+      currentSample[1] = (float)temp / 32.0f;
+    }
+    else
+    {
+      return (false);
+    }
+
   }
+  return (true);
 }
 
 /**@brief Function for decoding a int16 value.
