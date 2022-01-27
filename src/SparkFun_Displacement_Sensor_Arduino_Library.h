@@ -39,9 +39,9 @@ typedef enum
   ADS_POLL,  // ADS_INTERRUPT_ENABLE
   ADS_GET_FW_VER,
   ADS_CALIBRATE,
-  ADS_AXES_ENABLED,
+  ADS_AXES_ENABLED, // ADS_READ_STRETCH in bendlabs library for one-axis sensor
   ADS_SHUTDOWN,
-  ADS_GET_DEV_ID
+  ADS_GET_DEV_ID,
 } ADS_COMMAND_T;
 
 //Identifier for packet received from ADS
@@ -49,7 +49,8 @@ typedef enum
 {
   ADS_SAMPLE = 0,
   ADS_FW_VER,
-  ADS_DEV_ID
+  ADS_DEV_ID,
+  ADS_STRETCH_SAMPLE
 } ADS_PACKET_T;
 
 //Calibration registers
@@ -100,6 +101,9 @@ public:
   bool available(); //Checks to see if new data is available. Called regularly to update getX and getY functions
   float getX();     //Return a reading from the sensor. Check .available() before calling this
   float getY();     //Return a reading from the sensor. Check .available() before calling this
+  float getStretchingData(); // Return stretching data from the sensor. Check .available() before calling this
+
+  bool enableStretching(bool enable);    // Enable and disable the reading of linear dispacment data
 
   bool calibrateZero();    //Call when sensor is straight on both axis
   bool calibrateX();       //Call when sensor is straight on Y axis and 90 degrees on X axis. The X axis is moveable when the sensor is lying on a table.
@@ -125,8 +129,8 @@ private:
   uint8_t _deviceAddress = 0x13;   //Unshifted 7-bit default address of the ADS is 0x13
   volatile float currentSample[2]; //This is where the calculated angular values are stored pre and post filtering
   
-  float filter_samples[2][6];		// Filter samples
-  float prev_sample[2];				// Deadzone filter samples
+  float filter_samples[2][6];       // Filter samples
+  float prev_sample[2];             // Deadzone filter samples
 
   uint8_t _adsResetPin = 0; //Optional pin connections to sensor
   bool inFreeRun = false;
@@ -137,7 +141,7 @@ private:
   bool writeBuffer(uint8_t *buffer, uint8_t len); //Write a number of bytes (5) to ADS
 
   uint8_t readDeviceType(void);                //Reads the axis of the device attached to
-  void parseSamples(uint8_t *buffer);          //Convert bytes floats
+  bool parseSamples(uint8_t *buffer);          //Convert bytes floats
   void processNewData();                       //Takes the data from the latest sample and loads it into the filters
   void signalFilter(volatile float *sample);   // Low pass IIR filter
   void deadzoneFilter(volatile float *sample); // Deadzone filter
