@@ -29,7 +29,7 @@
 */
 
 #include <Wire.h>
-#include "SparkFunFlexes.h" // Click here to get the library: http://librarymanager/All#SparkFun_Displacement_Sensor
+#include "SparkFun_Displacement_Sensor_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_Displacement_Sensor
 
 ADS myFlexSensor; //Create instance of the Angular Displacement Sensor (ADS) class
 
