@@ -24,7 +24,17 @@
 
 #include "SparkFun_Displacement_Sensor_Arduino_Library.h"
 
-uint8_t ADS_TRANSFER_SIZE = 3; //All communication with one axis sensor is done in 3 byte frames, two axis is done in 5 byte frames
+namespace
+{
+	typedef enum : uint8_t
+	{
+		ADS_DEV_ONE_AXIS_V1 = 1,
+		ADS_DEV_ONE_AXIS_V2 = 12,
+		ADS_DEV_TWO_AXIS_V1 = 2		
+	} ADS_DEV_TYPE_T;
+	
+	uint8_t ADS_TRANSFER_SIZE = 3; //All communication with one axis sensor is done in 3 byte frames, two axis is done in 5 byte frames	
+}
 
 //Constructor
 ADS::ADS()
@@ -53,14 +63,18 @@ bool ADS::begin(uint8_t deviceAddress, TwoWire &wirePort)
 
   //Based on device address, guess at axis type, but then confirm it
   //There's a case where the user is using a 1-axis device at ADS_TWO_AXIS_ADDRESS and vice versa
-
-  axisAmount = (ADS_DEV_IDS_T)readDeviceType(); //Set global sensor axis number
-
-  if (axisAmount == ADS_ONE_AXIS)
-    ADS_TRANSFER_SIZE = 3;
-
-  if (axisAmount == ADS_TWO_AXIS)
-    ADS_TRANSFER_SIZE = 5;
+  switch (readDeviceType())
+  {
+  case ADS_DEV_ONE_AXIS_V1:
+  case ADS_DEV_ONE_AXIS_V2:
+	axisAmount = ADS_ONE_AXIS; //Set global sensor axis number
+	ADS_TRANSFER_SIZE = 3;
+	break;
+  case ADS_DEV_TWO_AXIS_V1:
+	axisAmount = ADS_TWO_AXIS; //Set global sensor axis number
+	ADS_TRANSFER_SIZE = 5;
+	break;
+  }
 
   setSampleRate(ADS_100_HZ);
 
