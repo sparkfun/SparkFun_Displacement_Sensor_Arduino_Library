@@ -26,15 +26,15 @@
 
 namespace
 {
-	typedef enum : uint8_t
-	{
-		ADS_DEV_ONE_AXIS_V1 = 1,
-		ADS_DEV_ONE_AXIS_V2 = 12,
-		ADS_DEV_TWO_AXIS_V1 = 2,
-        ADS_DEV_TWO_AXIS_V2 = 22
-	} ADS_DEV_TYPE_T;
-	
-	uint8_t ADS_TRANSFER_SIZE = 3; //All communication with one axis sensor is done in 3 byte frames, two axis is done in 5 byte frames	
+  typedef enum : uint8_t
+  {
+    ADS_DEV_ONE_AXIS_V1 = 1,
+    ADS_DEV_ONE_AXIS_V2 = 12,
+    ADS_DEV_TWO_AXIS_V1 = 2,
+    ADS_DEV_TWO_AXIS_V2 = 22
+  } ADS_DEV_TYPE_T;
+
+  uint8_t ADS_TRANSFER_SIZE = 3; //All communication with one axis sensor is done in 3 byte frames, two axis is done in 5 byte frames	
 }
 
 //Constructor
