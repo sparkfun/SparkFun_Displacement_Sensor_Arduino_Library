@@ -26,14 +26,15 @@
 
 namespace
 {
-	typedef enum : uint8_t
-	{
-		ADS_DEV_ONE_AXIS_V1 = 1,
-		ADS_DEV_ONE_AXIS_V2 = 12,
-		ADS_DEV_TWO_AXIS_V1 = 2		
-	} ADS_DEV_TYPE_T;
-	
-	uint8_t ADS_TRANSFER_SIZE = 3; //All communication with one axis sensor is done in 3 byte frames, two axis is done in 5 byte frames	
+  typedef enum : uint8_t
+  {
+    ADS_DEV_ONE_AXIS_V1 = 1,
+    ADS_DEV_ONE_AXIS_V2 = 12,
+    ADS_DEV_TWO_AXIS_V1 = 2,
+    ADS_DEV_TWO_AXIS_V2 = 22
+  } ADS_DEV_TYPE_T;
+
+  uint8_t ADS_TRANSFER_SIZE = 3; //All communication with one axis sensor is done in 3 byte frames, two axis is done in 5 byte frames	
 }
 
 //Constructor
@@ -71,6 +72,7 @@ bool ADS::begin(uint8_t deviceAddress, TwoWire &wirePort)
 	ADS_TRANSFER_SIZE = 3;
 	break;
   case ADS_DEV_TWO_AXIS_V1:
+  case ADS_DEV_TWO_AXIS_V2:
 	axisAmount = ADS_TWO_AXIS; //Set global sensor axis number
 	ADS_TRANSFER_SIZE = 5;
 	break;
@@ -157,7 +159,10 @@ bool ADS::setSampleRate(uint16_t sps)
   buffer[1] = (uint8_t)((sps & 0x00FF) >> 0);
   buffer[2] = (uint8_t)((sps & 0xFF00) >> 8);
 
-  return writeBuffer(buffer, ADS_TRANSFER_SIZE);
+  bool ret_value = writeBuffer(buffer, ADS_TRANSFER_SIZE);
+  delay(10);
+  
+  return ret_value;
 }
 
 /*
